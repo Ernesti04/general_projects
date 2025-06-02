@@ -1,10 +1,12 @@
 import matplotlib.pyplot as plt
+from matplotlib.pyplot import figure
 from matplotlib.patches import Circle
 import numpy as np
 import math
 fig, ax = plt.subplots()
 alphabet = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
 spacers = [" ", ".", ",", "-", "!", "?"]
+dist = 5
 
 def askConfig():
     while True:
@@ -21,12 +23,14 @@ def askConfig():
         except:
             obfuscate = 0
     col = input("Points color (css color name): ")
+    #col1 = input("Background color: ")
     col2 = input("Line color: ")
     col3 = input("Circle color: ")
     return split, obfuscate, col, col2, col3
 
 
 def graph():
+    #ax.set_facecolor(color1)
     ax.set_aspect('equal')
     plt.grid(False)
     ax.set_axis_off()
@@ -184,18 +188,20 @@ else:
     puncuation.append([])
 
 #print(puncuation)
-
+fig.set_figwidth(len(words) * (dist * 2 + 2)) #(figsize=( len(words) * (dist * 2 + 2), (2 * dist + 2) ))
+#fig.set_figheight(1.5 * dist + 2)
 w = 0
 for word in words:
     if word == []:
         continue
+    if len(puncuation) < w+1:
+        puncuation.append(" ")
     uniques = []
     match = []
     points = []
     coords = [[], []]
     bg_lines = []
     connections = []
-    dist = 5
     size = max((len(word) * 2 + 3), 11) # change to higher than 9 for larger alphabet
     print(f'Text: {"".join(word)}{puncuation[w]}\n\tCircle size: {size}')#\nMax K value: {size//2}')
     generate(size)
