@@ -1,0 +1,8 @@
+To run the program you need to have a python interpreter and the ability to install the plugins used. 
+
+Next you are given the option to use standard mode or give a binary input. Use standard mode to create a new circle. 
+You will be prompted to split text or not. If you split text it will separate words by the characters in the spacers array. 
+Next you are given the option to encrypt the results circles, this works by shifting the points and giving you the new order in the text output. 
+Finally you are asked to choose colors. These must be CSS color names,  any that would be two words need to be concatenated. 
+
+After all of that your circle(s) will generate in a new window. You may resize the window however you like and a save button is available. Additionally you have a set of binary at the end of the program. This is the representation of the text as shown in the circles. You can use this string as binary input after choosing that in the first question.
