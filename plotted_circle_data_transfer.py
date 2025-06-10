@@ -183,10 +183,11 @@ def generate(n): 				# function to generate uniques
                     puncuation[w] = item[0]
                     if function != 1:
                         data.append(str(item[1]))
-    for item in match:
-        for i in range(len(word)):
-            if word[i] in item:
-                word[i] = item[0]
+    if split == 1:
+        for item in match:
+            for i in range(len(word)):
+                if word[i] in item:
+                    word[i] = item[0]
     if function != 1:
         l = 1
     else:
