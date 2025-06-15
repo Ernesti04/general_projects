@@ -117,7 +117,7 @@ def compress(uncompressed):
     b = 0
     comp = []
     aa = alphabet[-10:] # 1-0
-    bb = alphabet[:-10] # A-Z a-z
+    bb = alphabet[:52] # A-Z a-z
     s = str(uncompressed)
     for i in range(len(s)):
         if s[i] == "1": # if a one
@@ -150,7 +150,7 @@ def compress(uncompressed):
     
 def decompress(compressed):
     aa = alphabet[-10:] # 1-0
-    bb = alphabet[:-10] # A-Z a-z
+    bb = alphabet[:52] # A-Z a-z
     s = str(''.join(compressed[1:]))
     decomp = []
     for i in range(len(s)):
