@@ -1,4 +1,3 @@
-import numpy as np
 # setup variables, don't touch
 w = 0 			# used as a word counter
 words = [[]] 		# stores words as they're used
