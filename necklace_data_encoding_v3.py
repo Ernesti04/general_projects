@@ -25,11 +25,11 @@ spacers = [" ", ".", ",", "!", "?"," \t", "\n"]
 # checking variables here, don't touch
 aRange = ( (1/a) * sum(2**(math.gcd(i,a)) for i in range(1, a+1)) ) / abs(c)
 if isP(a):
-    raise ValueError("!!!\n> a is prime, please chose another value.")
+    raise ValueError("a is prime, please chose another value.")
 if b > (2**a) or b < 1:
-    raise ValueError("!!!\n> b value out of range.")
+    raise ValueError("b value out of range.")
 if (len(alphabet)+len(spacers)) > aRange:
-    raise ValueError("!!!\n> Not enough necklace values available. ")
+    raise ValueError("Not enough necklace values available. ")
 
 # code starts here
 
