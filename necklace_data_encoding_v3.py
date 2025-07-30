@@ -1,5 +1,4 @@
 from sympy import isprime as isP
-import numpy as np
 import random
 import math
 import sys
@@ -11,7 +10,26 @@ puncuation = [] 	# stores puncuation (spacers) to match words
 data = [] 		# binary data goes here
 flags = [] 		# flags for data when reading encoded input
 split = 0 			# true/false for splitting text up
-outType = "all"	# output type, changes what 
+outType = "all"	# output type, changes what gets outputed when used with command line args
+outFile = "" 		# output file, if not blank then save result to file
+outTxt = "" 		# output text, results of encryption
+helpMsg = """Usage:
+\tnecklace_data_encoding_v3.py {-e | -d} [-s] [-o output_type] {-f input_file | -t input_text} [output_file]
+\tnecklace_data_encoding_v3.py -h
+\tnecklace_data_encoding_v3.py 
+
+Description:
+\tA program for encrypting through the use of binary necklaces. Run without arguments for an interactive process or with arguments for more options. 
+
+Options:
+\t-e \n\t\tSet program to encrypt. Will result in encrypted text as the output.
+\t-d \n\t\tSet the program to decrypt an encrypted input.
+\t-s \n\t\tSet the split flag. Encryption is altered to be based on words.
+\t-o \n\t\tSet the output type. \n\t-b for binary output.  \n\t-h for hex output. \n\t-c for compressed hex output.
+\t-f file_input\n\t\tThe file that text will be taken from from encryption. 
+\t-t text_input\n\t\tPlaintext input. Place within quotes to properly encrypt.
+\toutput_file \n\t\tWrites output to file. Set to match input file to encrypt the file. 
+"""
 
 # encoding variables, all must match for encoding AND decoding or text cannot be recovered easily
 a, b, c= 15, 1, 1 		# a = necklace length (when not splitting), b = starting point, c = increase for each necklace check
@@ -25,11 +43,11 @@ spacers = [" ", ".", ",", "!", "?"," \t", "\n"]
 # checking variables here, don't touch
 aRange = ( (1/a) * sum(2**(math.gcd(i,a)) for i in range(1, a+1)) ) / abs(c)
 if isP(a):
-    raise ValueError("a is prime, please chose another value.")
+    raise ValueError("!!!\n> a is prime, please chose another value.")
 if b > (2**a) or b < 1:
-    raise ValueError("b value out of range.")
+    raise ValueError("!!!\n> b value out of range.")
 if (len(alphabet)+len(spacers)) > aRange:
-    raise ValueError("Not enough necklace values available. ")
+    raise ValueError("!!!\n> Not enough necklace values available. ")
 
 # code starts here
 
@@ -254,28 +272,29 @@ def readBin(b):
 # -------------------------------------------------
 
 #print(len(sys.argv), sys.argv)
-if len(sys.argv) > 1:
-    if ("--h" in sys.argv or "-help" in sys.argv) and len(sys.argv) < 4:
-        print("Program for encrypting or decrypting using binary necklaces.") # help message
+if len(sys.argv) > 1:    
+    if ("-h" in sys.argv or "-help" in sys.argv): # help message requested
+        print(helpMsg)
         sys.exit()
     
-    if len(sys.argv) < 4:
-        raise ValueError("Usage: necklace_encryption.py ( -d/-e (decrypt or encrypt) -s (split, optional) -o (output type, optional) -t/-f (specify text or file input) {file or text}")
+    if (len(sys.argv) < 4):
+        raise ValueError("Too few arguments, please see -h for usage.")
     
-    if "-s" in sys.argv:
+    if "-s" in sys.argv: # split flag
         split = 1
     
-    if "-e" in sys.argv:
+    if "-e" in sys.argv: # encrypt
         function = 0
-    elif "-d" in sys.argv:
+    elif "-d" in sys.argv: # decrypt
         function = 1
     else:
         raise ValueError("Must specify encryption or decryption.")
     
     if "-t" in sys.argv:
-        text = list(sys.argv[-1])
+        text = list(sys.argv[sys.argv.index("-t") + 1])
     elif "-f" in sys.argv:
-        function = 1
+        with open(sys.argv[sys.argv.index("-f") + 1], "r") as file:
+            text = list(file.read())
     else:
         raise ValueError("Must specify input type.")
     
@@ -284,6 +303,9 @@ if len(sys.argv) > 1:
         outType = sys.argv[output+1]
         if outType not in ["all", "-h", "h", "hex", "hexadecimal", "-c", "c", "comp", "compressed",  "-b", "b", "bin", "binary"]:
             raise ValueError("Incorrect output type. Must be b (bin), h (hex), c (compressed), or excluded for all.")
+    
+    if (sys.argv.index("-f") + 1) < (len(sys.argv) -1):
+        outFile = sys.argv[-1]
     
 else:
     # determine if encrypting or decrypting
@@ -384,8 +406,8 @@ if function == 1:
     else:
         text = ''.join(words[0][:-1])
     if len(sys.argv) < 2:
-        print('Text: ')
-    print(text)
+        outTxt += 'Text: '
+    outTxt += text
 
 # add junk data if encoding and not splitting to deter factoring
 if function == 0 and split == 0:
@@ -398,16 +420,23 @@ if function == 0:
     data = ''.join(data)
     hexData = hex(int(data, 2))[2:]
     if len(sys.argv) < 2 and outType != "all":
-        print("\n")
+        outTxt += "\n"
     if outType in ["all", "-b", "b", "bin", "binary"]:
         if outType == "all":
-            print("\nBinary encoded data:") # raw data
-        print(f'{data}') # raw data
+            outTxt += "\nBinary encoded data:" # raw data
+        outTxt += data # raw data
     if outType in ["all", "-h", "h", "hex", "hexadecimal"]:
         if outType == "all":
-            print("\nHex encoded data:") # shortens text by converting to hex
-        print(f'h{hexData}') # shortens text by converting to hex
+            outTxt += "\nHex encoded data:" # shortens text by converting to hex
+        outTxt += f'h{hexData}' # shortens text by converting to hex
     if outType in ["all", "-c", "c", "comp", "compressed"]:
         if outType == "all":
-            print("\nCompressed:") # compress hex on 0s
-        print(f'x{compHex(hexData)}') # compress hex on 0s
+            outTxt += "\nCompressed:" # compress hex on 0s
+        outTxt += f'x{compHex(hexData)}' # compress hex on 0s
+
+if outFile == "":
+    print(outTxt)
+else:
+    with open(outFile, "w") as file:
+        file.write(outTxt)
+
